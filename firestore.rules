@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Products collection
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        (resource == null || resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Services collection
+    match /services/{serviceId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        (resource == null || resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Transactions collection
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || 
+         resource.data.buyerId == request.auth.uid ||
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Sales goals collection
+    match /sales_goals/{goalId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || isAdmin());
+      allow write: if isAuthenticated() && 
+        (request.resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Expenses collection
+    match /expenses/{expenseId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || isAdmin());
+      allow write: if isAuthenticated() && 
+        (request.resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Subscription sales collection
+    match /subscription_sales/{saleId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || isAdmin());
+      allow write: if isAuthenticated() && 
+        (request.resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Digital product tables collection
+    match /digital_product_tables/{tableId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || isAdmin());
+      allow write: if isAuthenticated() && 
+        (request.resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAuthenticated() && 
+        (request.resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}

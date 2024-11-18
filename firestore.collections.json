@@ -1,0 +1,193 @@
+{
+  "collections": {
+    "users": {
+      "fields": {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "role": "string (admin | user)",
+        "isPremium": "boolean",
+        "premiumExpiryDate": "timestamp (optional)",
+        "autoRenew": "boolean",
+        "phone": "string (optional)",
+        "createdAt": "timestamp",
+        "isActive": "boolean",
+        "companyInfo": {
+          "name": "string (optional)",
+          "address": "string (optional)",
+          "phone": "string (optional)",
+          "email": "string (optional)",
+          "logo": "string (optional)"
+        }
+      },
+      "indexes": [
+        {
+          "fields": ["role", "isActive"],
+          "queryScope": "COLLECTION"
+        },
+        {
+          "fields": ["isPremium", "premiumExpiryDate"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "products": {
+      "fields": {
+        "id": "string",
+        "name": "string",
+        "purchasePrice": "number",
+        "sellingPrice": "number",
+        "sellerId": "string",
+        "createdAt": "timestamp",
+        "updatedAt": "timestamp"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "createdAt"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "services": {
+      "fields": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "price": "number",
+        "expiryDate": "timestamp",
+        "sellerId": "string",
+        "createdAt": "timestamp",
+        "updatedAt": "timestamp"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "expiryDate"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "transactions": {
+      "fields": {
+        "id": "string",
+        "type": "string (premium | sale)",
+        "amount": "number",
+        "date": "timestamp",
+        "description": "string (optional)",
+        "buyerDetails": {
+          "name": "string",
+          "email": "string",
+          "phone": "string (optional)"
+        },
+        "paymentMethod": "string",
+        "status": "string",
+        "itemId": "string (optional)",
+        "sellerId": "string",
+        "buyerId": "string (optional)"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "date"],
+          "queryScope": "COLLECTION"
+        },
+        {
+          "fields": ["type", "date"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "sales_goals": {
+      "fields": {
+        "id": "string",
+        "sellerId": "string",
+        "target": "number",
+        "current": "number",
+        "startDate": "timestamp",
+        "endDate": "timestamp",
+        "type": "string (monthly | yearly)"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "endDate"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "expenses": {
+      "fields": {
+        "id": "string",
+        "sellerId": "string",
+        "amount": "number",
+        "description": "string",
+        "category": "string",
+        "date": "timestamp",
+        "createdAt": "timestamp",
+        "updatedAt": "timestamp"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "date"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "subscription_sales": {
+      "fields": {
+        "id": "string",
+        "serviceName": "string",
+        "duration": "number",
+        "amount": "number",
+        "customerName": "string",
+        "customerEmail": "string",
+        "customerPhone": "string",
+        "purchaseDate": "timestamp",
+        "expiryDate": "timestamp",
+        "status": "string (active | expired)",
+        "sellerId": "string"
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId", "status"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "digital_product_tables": {
+      "fields": {
+        "id": "string",
+        "name": "string",
+        "sellerId": "string",
+        "products": [
+          {
+            "id": "string",
+            "name": "string",
+            "description": "string",
+            "link": "string"
+          }
+        ]
+      },
+      "indexes": [
+        {
+          "fields": ["sellerId"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    "notifications": {
+      "fields": {
+        "id": "string",
+        "userId": "string",
+        "title": "string",
+        "message": "string",
+        "type": "string",
+        "isRead": "boolean",
+        "createdAt": "timestamp"
+      },
+      "indexes": [
+        {
+          "fields": ["userId", "isRead", "createdAt"],
+          "queryScope": "COLLECTION"
+        }
+      ]
+    }
+  }
+}
